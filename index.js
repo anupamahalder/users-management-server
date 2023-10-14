@@ -1,7 +1,11 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 // to avoid any issue regarding port after deployment 
 const port = process.env.PORT || 5000;
+
+// middleware 
+app.use(cors());
 
 //here we can create some hard coded data 
 const users=[
