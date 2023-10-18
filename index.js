@@ -10,10 +10,7 @@ app.use(express.json());
 
 // create some hard coded data 
 const users = [
-    {id: 1, name:'Anu',age:22},
-    {id: 2, name:'Rup',age:20},
-    {id: 3, name:'Niru',age:27},
-    {id: 4, name:'Sumitra',age:42},
+    {id: 1, name:'Anu',password:'2yewt872'},
 ]
 
 // create a route (root/main route)
@@ -30,6 +27,13 @@ app.post('/users',(req, res)=>{
     // data from client side will be send via body so we gonna get that into body
     console.log(req.body);
     console.log('post api is hitting!');
+    const newUser = req.body;
+    // set id to newUser 
+    newUser.id = users.length + 1;
+    // push new user to existing users data 
+    users.push(newUser);
+    // and send updated users to client side 
+    res.send(newUser);
 })
 
 
