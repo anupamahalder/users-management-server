@@ -1,32 +1,40 @@
 const express = require('express');
-const app = express();
 const cors = require('cors');
-// to avoid any issue regarding port after deployment 
-const port = process.env.PORT || 5000;
+const app = express();
+// process.env.PORT is used to assign a random port from where we are going to deploy 
+const port = process.env.port || 5001;
 
-// middleware 
+// middleware
 app.use(cors());
+app.use(express.json());
 
-//here we can create some hard coded data 
-const users=[
-    {id: 1, name:'Sabana', email:'sabana@gmail.com'},
-    {id: 2, name:'Sabila', email:'sabila@gmail.com'},
-    {id: 3, name:'Sabnur', email:'sabnur@gmail.com'},
-    {id: 4, name:'Sahanaz', email:'sahanaz@gmail.com'},
-    {id: 5, name:'Simul', email:'simul@gmail.com'},
+// create some hard coded data 
+const users = [
+    {id: 1, name:'Anu',age:22},
+    {id: 2, name:'Rup',age:20},
+    {id: 3, name:'Niru',age:27},
+    {id: 4, name:'Sumitra',age:42},
 ]
 
-// create a route and to make it run we will listen it later
-app.get('/',(req, res)=>{
-    res.send('Users Management server is running...');
+// create a route (root/main route)
+app.get('/',(req,res)=>{
+    res.send("Server is running...");
 })
 
-// create a special api 
+// create an api 
 app.get('/users',(req,res)=>{
     res.send(users);
 })
+// create an post api in server side and to access post we have to mention it from client side
+app.post('/users',(req, res)=>{
+    // data from client side will be send via body so we gonna get that into body
+    console.log(req.body);
+    console.log('post api is hitting!');
+})
 
-//listen to the port then you can give an optional callback function 
-app.listen(port, ()=>{
-    console.log(`server is running on PORT: ${port}`);
+
+
+//run the server on a port and give an optional callback function
+app.listen(port,()=>{
+    console.log(`Server is running on PORT: ${port}`);
 })
