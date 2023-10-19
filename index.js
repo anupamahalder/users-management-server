@@ -34,12 +34,22 @@ async function run() {
     //add data to database
     const usersCollection = client.db("usersDB").collection('users');
 
-    // create an api for get data from server to client 
+    // create an api for get all data from server to client  
     app.get('/users', async(req, res)=>{
         const cursor = usersCollection.find();
         const result = await cursor.toArray();
         res.send(result);
     })
+
+    // create an api to get data from client side using id 
+    app.get('/users/:id', async(req, res)=>{
+      const id = req.params.id;
+      // we will find data using id field 
+      const query = {_id: new ObjectId(id)};
+      const user = await usersCollection.findOne(query);
+      res.send(user);
+    })
+
     // create an post api
     app.post('/users',async(req,res)=>{
         const user = req.body;
@@ -48,6 +58,29 @@ async function run() {
         const result = await usersCollection.insertOne(user);
         // send data which mongodb will return 
         res.send(result);
+    })
+
+    // create a put api to update user (if already existing user then update only else create it)
+    app.put('/users/:id', async(req, res)=>{
+      const id = req.params.id;
+      const user = req.body;
+      // backend is receiving data or not so console.log 
+      console.log(user);
+      // send data to database with id field
+      const filter = {_id: new ObjectId(id)};
+      // if data in database not found then insert this data in database 
+      const option = {upsert: true};
+      const updatedUser = {
+        $set:{
+          // upadate property with new value getting from client side 
+          name: user.name,
+          email: user.email
+        }
+      }
+      // first parameter is something by which we can get the user and second parameter is the updatedUser and third parameter is option
+      const result = await usersCollection.updateOne(filter, updatedUser, option);
+      // send to client side 
+      res.send(result);
     })
     //create a delete api in url we can give id dynamically
     app.delete('/users/:id',async(req, res)=>{
